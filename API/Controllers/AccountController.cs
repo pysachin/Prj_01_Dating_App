@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,13 +13,15 @@ namespace API.Controllers
     public class AccountController : BaseAPIController
     {
         private readonly DataContext _context;
-        public AccountController(DataContext context)
+        private readonly ITokenService _tokenService;
+        public AccountController(DataContext context, ITokenService tokenService)
         {
             _context = context;
+            _tokenService = tokenService;
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<AppUser>> Register(RegisterDTO regDTO)
+        public async Task<ActionResult<UserDTO>> Register(RegisterDTO regDTO)
         {
 
             if (await IsUserExists(regDTO.Username)) return BadRequest("User Name Already Exists");
@@ -34,7 +37,11 @@ namespace API.Controllers
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-            return user;
+            return new UserDTO()
+            {
+                UserName = user.UserName,
+                Token = _tokenService.CreateToken(user),
+            };
         }
 
         private async Task<bool> IsUserExists(string UserName)
@@ -43,7 +50,7 @@ namespace API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AppUser>> Login(LoginDTO logDTO)
+        public async Task<ActionResult<UserDTO>> Login(LoginDTO logDTO)
         {
             var user = await _context.Users
                         .SingleOrDefaultAsync(u => u.UserName.ToLower() == logDTO.Username.ToLower());
@@ -59,7 +66,11 @@ namespace API.Controllers
                 if (computedhash[i] != user.PasswordHash[i]) return Unauthorized("Invalid Password");
             }
 
-            return user;
+            return new UserDTO()
+            {
+                UserName = user.UserName,
+                Token = _tokenService.CreateToken(user),
+            };
         }
 
     }

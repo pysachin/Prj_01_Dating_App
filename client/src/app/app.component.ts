@@ -11,7 +11,7 @@ import { AccountService } from './_services/account.service';
 export class AppComponent implements OnInit {
 
   title = 'A Dating App';
-  users: any;
+ 
   /**
    *
    */
@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getUsers();
+    
     this.getCurrentUser();
   }
 
@@ -30,14 +30,6 @@ export class AppComponent implements OnInit {
     this.accountService.setCurrentUser(user);
   }
 
-  getUsers() {
 
-    this.http.get('https://localhost:5001/api/users')
-      .subscribe(response => {
-        this.users = response;
-      }, error => {
-        console.log(error);
-      })
-  }
 
 }

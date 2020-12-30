@@ -28,9 +28,9 @@
         <div *ngIf="(accountService.currentUser$ | async) === null" class="container-fluid">
             <form #loginform="ngForm" class="form-inline my-1 my-lg-0" (ngSubmit)="login()">
                 <div class="form-group">
-                    <input name="username" [(ngModel)]="model.username" class="form-control m-1" type="search"
+                    <input name="username" [(ngModel)]="model.username" class="form-control m-1" type="text"
                         placeholder="User Name">
-                    <input name="password" [(ngModel)]="model.password" class="form-control m-1 " type="search"
+                    <input name="password" [(ngModel)]="model.password" class="form-control m-1 " type="password"
                         placeholder="Password">
                     <button class="btn btn-outline-success m-1" type="submit">Login</button>
                 </div>

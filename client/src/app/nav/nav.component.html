@@ -3,7 +3,7 @@
         <a class="navbar-brand" href="#">Dating App</a>
 
         <div class="container-fluid">
-            <ul class="navbar-nav">
+            <ul class="navbar-nav" *ngIf="accountService.currentUser$ | async">
                 <li class="nav-item">
                     <a class="nav-link" href="#">Matches</a>
                 </li>
@@ -16,12 +16,22 @@
             </ul>
         </div>
 
+        <div class="dropdown" *ngIf="accountService.currentUser$ | async" dropdown>
+            <a class="dropdown-toggle text-light " dropdownToggle> Welcome User</a>
+            <div class="dropdown-menu mt-3" *dropdownMenu>
+                <a class="dropdown-item">Edit Profile</a>
+                <div class="divider dropdown-divider"></div>
+                <a class="dropdown-item" (click)="logout()">Logout</a>
+            </div>
+        </div>
 
-        <div class="container-fluid">
-            <form class="form-inline my-1 my-lg-0">
+        <div *ngIf="(accountService.currentUser$ | async) === null" class="container-fluid">
+            <form #loginform="ngForm" class="form-inline my-1 my-lg-0" (ngSubmit)="login()">
                 <div class="form-group">
-                    <input class="form-control m-1" type="search" placeholder="User Name">
-                    <input class="form-control m-1 " type="search" placeholder="Password">
+                    <input name="username" [(ngModel)]="model.username" class="form-control m-1" type="search"
+                        placeholder="User Name">
+                    <input name="password" [(ngModel)]="model.password" class="form-control m-1 " type="search"
+                        placeholder="Password">
                     <button class="btn btn-outline-success m-1" type="submit">Login</button>
                 </div>
             </form>

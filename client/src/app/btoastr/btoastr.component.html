@@ -1,0 +1,6 @@
+
+<div *ngIf="btoastr.show$ | async" class="row m-2 ">
+    <div class="col-12 float-right border text-right border-danger rounded">
+        <small class="text-danger font-weight-bold text-lowercase "> {{btoastr.msg$ | async}} </small>
+    </div>
+</div>

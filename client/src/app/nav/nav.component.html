@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" style="position: relative">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-primary" style="position: relative">
     <div class="container">
         <a class="navbar-brand" routerLink='/' routerLinkActive='active'>Dating App</a>
 
@@ -16,8 +16,8 @@
             </ul>
         </div>
 
-        <div class="dropdown" *ngIf="accountService.currentUser$ | async" dropdown>
-            <a class="dropdown-toggle text-light " dropdownToggle> Welcome User</a>
+        <div class="dropdown btn-group" role="group" aria-label="Button group with nested dropdown" *ngIf="(accountService.currentUser$ | async) as user" dropdown>
+            <a class="dropdown-toggle text-light btn btn-info " dropdownToggle> {{user.userName + '  ' | titlecase}}</a>
             <div class="dropdown-menu mt-3" *dropdownMenu>
                 <a class="dropdown-item">Edit Profile</a>
                 <div class="divider dropdown-divider"></div>
@@ -32,7 +32,7 @@
                         placeholder="User Name">
                     <input name="password" [(ngModel)]="model.password" class="form-control m-1 " type="password"
                         placeholder="Password">
-                    <button class="btn btn-outline-success m-1" type="submit">Login</button>
+                    <button class="btn btn-success m-1" type="submit">Login</button>
                 </div>
             </form>
         </div>

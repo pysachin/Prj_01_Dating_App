@@ -18,7 +18,7 @@ export class NavComponent implements OnInit {
 
   constructor(public accountService: AccountService, 
     private router: Router,
-    public btoastr : BtoastrService    
+    public btoastr : ToastrService    
     ) { }
 
   ngOnInit(): void {
@@ -30,9 +30,6 @@ export class NavComponent implements OnInit {
     this.accountService.login(this.model).subscribe(response => {
       this.router.navigateByUrl('/members');      
       console.log(response);
-    }, error => {      
-      this.btoastr.setShow(true,error.error);
-      console.log(error);
     });
   }
 

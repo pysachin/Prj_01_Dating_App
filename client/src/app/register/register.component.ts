@@ -17,7 +17,7 @@ export class RegisterComponent implements OnInit {
   model: any = {}
 
   constructor(private accountService: AccountService,
-    public btoastr : BtoastrService  
+    public btoastr : ToastrService  
     ) { }
 
   ngOnInit(): void {
@@ -29,8 +29,8 @@ export class RegisterComponent implements OnInit {
       console.log(response);
       this.cancel();
     }, error => 
-    { 
-      this.btoastr.setShow(true,error.error);
+    {       
+      this.btoastr.error(error.error)
       console.log(error);      
     })
   }

@@ -7,3 +7,7 @@
 /DatingApp/bin/Debug/net5.0
 /DatingApp/obj
 
+.vs/slnx.sqlite
+.vs/VSWorkspaceState.json
+.vs/Prj_01_Dating_App/v16/.suo
+API/datingapp.db-shm

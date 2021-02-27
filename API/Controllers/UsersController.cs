@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -18,13 +19,16 @@ namespace API.Controllers
     public class UsersController : BaseAPIController
     {
         private readonly IUserRepository UserRepo;
+        private readonly IMapper _mapper;
 
         public UsersController(
-            IUserRepository UserRepo
+            IUserRepository UserRepo,
+            IMapper mapper
             )
 
         {
             this.UserRepo = UserRepo;
+            _mapper = mapper;
         }
 
         //api/users
@@ -41,5 +45,15 @@ namespace API.Controllers
             return await UserRepo.GetMemberByUserNameAsync(username);
         }
 
+        [HttpPut]
+        public async Task<ActionResult> UpdateUser(MemberUpdateDTO memberInfo)
+        {
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var user = await UserRepo.GetUserByUserNameAsync(username);
+            _mapper.Map(memberInfo, user);
+            UserRepo.UpdateUser(user);
+            if (await UserRepo.SaveAllAsync()) return NoContent();
+            return BadRequest("Failed To Update User");
+        }
     }
 }

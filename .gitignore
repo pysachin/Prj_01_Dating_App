@@ -14,3 +14,6 @@ API/datingapp.db-shm
 readme.txt
 API/datingapp.db
 API/datingapp.db
+API/API.csproj
+API/appsettings.json
+API/datingapp.db

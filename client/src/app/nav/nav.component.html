@@ -23,6 +23,7 @@
         </div>
 
         <div class="dropdown btn-group" role="group" aria-label="Button group with nested dropdown" *ngIf="(accountService.currentUser$ | async) as user" dropdown>
+            <img src="{{user.photoUrl}}" alt="username" />
             <a class="dropdown-toggle text-light btn btn-info " dropdownToggle> {{user.userName + '  ' | titlecase}}</a>
             <div class="dropdown-menu mt-3" *dropdownMenu>
                 <a class="dropdown-item" routerLink='/member/edit' routerLinkActive='active'>Edit Profile</a>

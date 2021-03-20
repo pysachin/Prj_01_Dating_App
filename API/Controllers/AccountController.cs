@@ -6,6 +6,7 @@ using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,10 +16,15 @@ namespace API.Controllers
     {
         private readonly DataContext _context;
         private readonly ITokenService _tokenService;
-        public AccountController(DataContext context, ITokenService tokenService)
+        private readonly IMapper _mapper;
+        public AccountController(DataContext context,
+        ITokenService tokenService,
+        IMapper mapper
+        )
         {
             _context = context;
             _tokenService = tokenService;
+            _mapper = mapper;
         }
 
         [HttpPost("register")]
@@ -27,14 +33,13 @@ namespace API.Controllers
 
             if (await IsUserExists(regDTO.Username)) return BadRequest("User Name Already Exists");
 
+            var user = _mapper.Map<AppUser>(regDTO);
+
             using var hmac = new HMACSHA512();
 
-            var user = new AppUser()
-            {
-                UserName = regDTO.Username,
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(regDTO.Password)),
-                PasswordSalt = hmac.Key
-            };
+            user.UserName = regDTO.Username;
+            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(regDTO.Password));
+            user.PasswordSalt = hmac.Key;
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -42,6 +47,7 @@ namespace API.Controllers
             {
                 UserName = user.UserName,
                 Token = _tokenService.CreateToken(user),
+                KnownAs = user.KnownAs
             };
         }
 
@@ -72,7 +78,8 @@ namespace API.Controllers
             {
                 UserName = user.UserName,
                 Token = _tokenService.CreateToken(user),
-                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain == true)?.Url
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain == true)?.Url,
+                KnownAs = user.KnownAs
             };
         }
 

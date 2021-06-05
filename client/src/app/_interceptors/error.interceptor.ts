@@ -33,6 +33,8 @@ export class ErrorInterceptor implements HttpInterceptor {
                       }
                     }
                   throw modelStateErrors.flat();
+                }else if(typeof(error.error) === 'object'){
+                  this.toaster.error(error.statusText,error.status);
                 }else{
                   this.toaster.error(error.error,error.status);
                 }

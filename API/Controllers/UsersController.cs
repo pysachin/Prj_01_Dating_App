@@ -37,6 +37,7 @@ namespace API.Controllers
         }
 
         //api/users
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers([FromQuery] UserParams userParams)
         {
@@ -44,7 +45,7 @@ namespace API.Controllers
             userParams.CurrentUsername = user.UserName;
 
             if (string.IsNullOrEmpty(userParams.Gender))
-                userParams.Gender = user.Gender == "male" ? "female" : "male"; 
+                userParams.Gender = user.Gender == "male" ? "female" : "male";
 
             var users = await UserRepo.GetMembersAsync(userParams);
             Response.AddPaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
@@ -52,6 +53,7 @@ namespace API.Controllers
         }
 
         //api/users/4
+        [Authorize(Roles = "Member")]
         [HttpGet("{username}", Name = "GetUser")]
         public async Task<ActionResult<MemberDTO>> GetUser(string username)
         {

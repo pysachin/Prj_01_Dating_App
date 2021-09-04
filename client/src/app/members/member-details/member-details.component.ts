@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { Member } from 'src/app/_model/Members';
 import { MembersService } from 'src/app/_services/members.service';
@@ -10,13 +10,16 @@ import { getAttrsForDirectiveMatching } from '@angular/compiler/src/render3/view
 import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { MessageService } from 'src/app/_services/message.service';
 import { Message } from 'src/app/_model/Message';
+import { PresenceService } from 'src/app/_services/presence.service';
+import { AccountService } from 'src/app/_services/account.service';
+import { User } from 'src/app/_model/User';
 
 @Component({
   selector: 'app-member-details',
   templateUrl: './member-details.component.html',
   styleUrls: ['./member-details.component.css']
 })
-export class MemberDetailsComponent implements OnInit {
+export class MemberDetailsComponent implements OnInit,OnDestroy {
 
   @ViewChild('memberTabset', {static: true}) memberTabset : TabsetComponent;
   member:Member;
@@ -24,11 +27,19 @@ export class MemberDetailsComponent implements OnInit {
   galleryImages: NgxGalleryImage[];
   activeTab : TabDirective;
   messages: Message[] = [];
-
-  constructor(private memberService:MembersService,
+  user: User;
+  constructor(public presence: PresenceService,
     private route: ActivatedRoute,
-    private messageService: MessageService
-    ) { }
+    private messageService: MessageService,
+    private accountService: AccountService,
+    private router: Router
+    ) { 
+      this.accountService.currentUser$
+        .pipe(take(1))
+        .subscribe(user => this.user = user);
+        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    }
+ 
 
   ngOnInit(): void {
     //this.loadMember();
@@ -108,9 +119,15 @@ export class MemberDetailsComponent implements OnInit {
       this.activeTab = data;
       if(this.activeTab.heading === 'Messages' && this.messages.length === 0)
       {
-         this.loadMessages();
+         //this.loadMessages(); change API call to Hub Call
+         this.messageService.createHubConnection(this.user,this.member.userName);
+      }else{
+          this.messageService.stopHubConnection();
       }
   }
 
+  ngOnDestroy(): void {
+    this.messageService.stopHubConnection();
+  }
 
 }

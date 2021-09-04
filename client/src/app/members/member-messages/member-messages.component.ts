@@ -16,7 +16,7 @@ export class MemberMessagesComponent implements OnInit {
   messageContent:string;
   @ViewChild('messageForm') messageForm:NgForm;
 
-  constructor(private messageService:MessageService) { }
+  constructor(public messageService:MessageService) { }
 
   ngOnInit(): void {
       
@@ -24,11 +24,19 @@ export class MemberMessagesComponent implements OnInit {
 
 
   sendMessage(){
+    
+    // replace API call to hub call
+    // this.messageService.sendMessage(this.username,this.messageContent)
+    // .subscribe(message => {
+    //   this.messages.push(message);
+    //   this.messageForm.reset();
+    // });
+
     this.messageService.sendMessage(this.username,this.messageContent)
-    .subscribe(message => {
-      this.messages.push(message);
+    .then(message => {      
       this.messageForm.reset();
     });
+
   }
 
   

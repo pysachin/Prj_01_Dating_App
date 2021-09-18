@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using API.DTOs;
 using API.Entities;
@@ -72,10 +73,13 @@ namespace API.Data
             .SingleOrDefaultAsync(u => u.UserName.ToLower() == userName.ToLower());
         }
 
-        public async Task<bool> SaveAllAsync()
+        public async Task<string> GetUserGender(string username)
         {
-            return await context.SaveChangesAsync() > 0;
+            return await context.Users.Where(x => x.UserName == username)
+            .Select(x => x.Gender).FirstOrDefaultAsync();
+
         }
+
         public void UpdateUser(AppUser appUser)
         {
             context.Entry(appUser).State = EntityState.Modified;
